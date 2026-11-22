@@ -1,0 +1,57 @@
+name: build-lixxzy-rat
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Install required SDK packages
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
+      # --- INI BAGIAN PENTINGNYA ---
+      - name: Generate Keystore Otomatis
+        run: |
+          keytool -genkeypair -v -keystore release.keystore -alias lixxzy \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass changeme -keypass changeme \
+            -dname "CN=Lixxzy, OU=Dev, O=Lixxzy, L=NA, ST=NA, C=NA"
+
+      - name: Install system Gradle
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y gradle
+
+      - name: Build release APK
+        env:
+          KEYSTORE_PATH: release.keystore
+          KEYSTORE_PASS: changeme
+          KEY_ALIAS: lixxzy
+          KEY_PASS: changeme
+        run: |
+          gradle assembleRelease --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: lixxzy-rat-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
