@@ -14,7 +14,8 @@ android {
     
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE_PATH") ?: "release.keystore")
+            // INI BAGIAN YANG DIUBAH (Tambahin rootProject.)
+            storeFile rootProject.file(System.getenv("KEYSTORE_PATH") ?: "release.keystore")
             storePassword System.getenv("KEYSTORE_PASS") ?: "changeme"
             keyAlias System.getenv("KEY_ALIAS") ?: "lixxzy"
             keyPassword System.getenv("KEY_PASS") ?: "changeme"
