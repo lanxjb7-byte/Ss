@@ -1,0 +1,34 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'com.r.rat'
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.r.rat"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release { minifyEnabled false; signingConfig signingConfigs.release }
+        debug   { signingConfig signingConfigs.debug }
+    }
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("KEYSTORE_PATH") ?: "release.keystore")
+            storePassword System.getenv("KEYSTORE_PASS") ?: "changeme"
+            keyAlias System.getenv("KEY_ALIAS") ?: "lixxzy"
+            keyPassword System.getenv("KEY_PASS") ?: "changeme"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'io.socket:socket.io-client:2.1.0'
+    implementation 'org.json:json:20231013'
+}
