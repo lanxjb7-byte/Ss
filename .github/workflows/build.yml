@@ -36,7 +36,6 @@ jobs:
             -storepass changeme -keypass changeme \
             -dname "CN=Lixxzy, OU=Dev, O=Lixxzy, L=NA, ST=NA, C=NA"
 
-      # --- BAGIAN YANG DIUBAH ---
       - name: Setup Gradle 8.7
         uses: gradle/actions/setup-gradle@v3
         with:
