@@ -41,14 +41,22 @@ jobs:
         with:
           gradle-version: 8.7
 
-      - name: Build release APK
+      - name: Build release APK (Retry x3)
         env:
           KEYSTORE_PATH: release.keystore
           KEYSTORE_PASS: changeme
           KEY_ALIAS: lixxzy
           KEY_PASS: changeme
         run: |
-          gradle assembleRelease --no-daemon
+          # Coba build, kalau gagal tunggu 15 detik, coba lagi (maks 3x)
+          n=0
+          until [ "$n" -ge 3 ]
+          do
+             gradle assembleRelease --no-daemon && break
+             n=$((n+1)) 
+             echo "Build gagal (kemungkinan server Maven penuh). Mencoba ulang dalam 15 detik... ($n/3)"
+             sleep 15
+          done
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
